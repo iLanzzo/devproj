@@ -1,0 +1,43 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: devproj-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ilandev
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: test01
+    volumes:
+      - ./mysql-db:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - devproj
+
+  myapp:
+    build:
+      context: ./myapp/
+      dockerfile: Dockerfile
+    image: devproj-app
+    container_name: devproj-app
+    command: sh -c "python app.py"
+    ports:
+      - 8085:8085
+    hostname: devproj
+    depends_on:
+    - mysql
+    networks:
+      - devproj
+
+networks:
+  devproj:
+    driver: bridge
+
+
+
+#  volumes:
+ #   mysql-db:
+  #    driver:local
+
+
+
